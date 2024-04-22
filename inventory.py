@@ -50,10 +50,25 @@ class MainWindow(QMainWindow):
         layout.addWidget(QLabel("Description: "))
         layout.addWidget(self.description_edit)
 
-        # Button to add product
+        # Button to add a product
         add_button = QPushButton("Add Product", self)
         add_button.clicked.connect(self.add_product)
         layout.addWidget(add_button)
+
+        # Button to delete a product
+        delete_button = QPushButton("Delete Product", self)
+        delete_button.clicked.connect(self.delete_product)
+        layout.addWidget(delete_button)
+
+    # Delete product from the table
+    def delete_product(self):
+        current_row = self.table_widget.currentRow()
+        if current_row < 0 or current_row >= self.table_widget.rowCount():
+            button = QMessageBox.question(self, "Delete Product", "Are you sure you want to delete this product?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+        if button == QMessageBox.StandardButton.Yes:
+            self.table_widget.removeRow(current_row)
+            del self.products[current_row]
+
 
     # Add product to the table
     def add_product(self):
