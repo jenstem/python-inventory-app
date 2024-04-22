@@ -60,6 +60,33 @@ class MainWindow(QMainWindow):
         delete_button.clicked.connect(self.delete_product)
         layout.addWidget(delete_button)
 
+        # Button to update a product
+        update_button = QPushButton("Update Product", self)
+        update_button.clicked.connect(self.update_product)
+        layout.addWidget(update_button)
+
+
+    # Update product in the table
+    def update_product(self):
+        current_row = self.table_widget.currentRow()
+        if current_row < 0 or current_row >= self.table_widget.rowCount():
+            return QMessageBox.warning(self, "No row selected")
+
+        name = self.name_edit.text().strip()
+        price = self.price_edit.text().strip()
+        description = self.description_edit.text().strip()
+
+        updated_product = {"Name": name, "Price": price, "Description": description}
+        self.products[current_row] = updated_product
+
+        for col, value in enumerate(updated_product.values()):
+            item = QTableWidgetItem(str(value))
+            self.table_widget.setItem(current_row, col, item)
+            self.name_edit.clear()
+            self.price_edit.clear()
+            self.description_edit.clear()
+
+
     # Delete product from the table
     def delete_product(self):
         current_row = self.table_widget.currentRow()
