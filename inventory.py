@@ -2,19 +2,17 @@ from PyQt5.QtWidgets import QMenu, QMessageBox, QToolBar, QPushButton, QSpinBox,
 import sys
 
 
-products = [
+class MainWindow(QMainWindow):
+
+    def __init__(self):
+        super().__init__()
+        products = [
     {"name": "apple", "price": 1.0, "description": "Honeycrisp Apples"},
     {"name": "banana", "price": 1.5, "description": "Bunch of Organic Bananas"},
     {"name": "cherry", "price": 2.0, "description": "1lb Bag of Cherries"},
     {"name": "dates", "price": 3.0, "description": "1lb Bag of Dates"},
     {"name": "elderberry", "price": 4.0, "description": "1 Pint of Elderberries"},
 ]
-
-
-class MainWindow(QMainWindow):
-
-    def __init__(self):
-        super().__init__()
         self.initUI()
 
     def initUI(self):
