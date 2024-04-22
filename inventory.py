@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QMenu, QMessageBox, QToolBar, QPushButton, QSpinBox, QMainWindow, QApplication, QWidget, QVBoxLayout, QTableWidget, QTableWidgetItem
+from PyQt5.QtWidgets import QMenu, QMessageBox, QToolBar, QPushButton, QSpinBox, QMainWindow, QApplication, QWidget, QVBoxLayout, QTableWidget, QTableWidgetItem, QLineEdit, QLabel
 import sys
 
 
@@ -38,6 +38,21 @@ class MainWindow(QMainWindow):
                 item = QTableWidgetItem(str(value))
                 self.table_widget.setItem(row, col, item)
 
+        # Input fields
+        self.name_edit = QLineEdit(self)
+        self.price_edit = QLineEdit(self)
+        self.description_edit = QLineEdit(self)
+
+        layout.addWidget(QLabel("Name: "))
+        layout.addWidget(self.name_edit)
+        layout.addWidget(QLabel("Price: "))
+        layout.addWidget(self.price_edit)
+        layout.addWidget(QLabel("Description: "))
+        layout.addWidget(self.description_edit)
+
+        # Button to add product
+        add_button = QPushButton("Add Product", self)
+        layout.addWidget(add_button)
 
 
 app = QApplication(sys.argv)
