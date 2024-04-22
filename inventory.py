@@ -52,7 +52,26 @@ class MainWindow(QMainWindow):
 
         # Button to add product
         add_button = QPushButton("Add Product", self)
+        add_button.clicked.connect(self.add_product)
         layout.addWidget(add_button)
+
+    # Add product to the table
+    def add_product(self):
+        name = self.name_edit.text().strip()
+        price = self.price_edit.text().strip()
+        description = self.description_edit.text().strip()
+
+        new_product = {"Name": name, "Price": price, "Description": description}
+        self.products.append(new_product)
+
+        row_position = len(self.products) - 1
+        self.table_widget.insertRow(row_position)
+        for col, value in enumerate(new_product.values()):
+            item = QTableWidgetItem(str(value))
+            self.table_widget.setItem(row_position, col, item)
+            self.name_edit.clear()
+            self.price_edit.clear()
+            self.description_edit.clear()
 
 
 app = QApplication(sys.argv)
