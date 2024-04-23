@@ -1,4 +1,5 @@
 from PyQt5.QtWidgets import QMenu, QMessageBox, QToolBar, QPushButton, QSpinBox, QMainWindow, QApplication, QWidget, QVBoxLayout, QTableWidget, QTableWidgetItem, QLineEdit, QLabel
+import sqlite3
 import sys
 
 
@@ -14,7 +15,15 @@ class MainWindow(QMainWindow):
         {"Name": "Dates", "Price": 3.0, "Description": "1lb Bag of Dates"},
         {"Name": "Elderberry", "Price": 4.0, "Description": "1 Pint of Elderberries"},
 ]
+
+        self.conn = sqlite3.connect("products.db")
+        self.create_table()
         self.initUI()
+
+    def create_table(self):
+        cursor = self.conn.cursor()
+        cursor.execute("""CREATE TABLE IF NOT EXISTS products (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, price INTEGER, description TEXT)""")
+        self.conn.commit()
 
     def initUI(self):
         self.setGeometry(0, 0, 700, 500)
