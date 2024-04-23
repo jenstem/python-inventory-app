@@ -28,7 +28,7 @@ class MainWindow(QMainWindow):
     # Create table
     def create_table(self):
         cursor = self.conn.cursor()
-        cursor.execute("""CREATE TABLE IF NOT EXISTS products (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, price INTEGER, description TEXT)""")
+        cursor.execute("""CREATE TABLE IF NOT EXISTS products (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, price INTEGER, description TEXT, quantity INTEGER)""")
         self.conn.commit()
 
     def initUI(self):
@@ -43,9 +43,9 @@ class MainWindow(QMainWindow):
         self.table_widget = QTableWidget(self)
         layout.addWidget(self.table_widget)
 
-        self.table_widget.setColumnCount(4)
+        self.table_widget.setColumnCount(5)
 
-        self.table_widget.setHorizontalHeaderLabels(["ID", "Name", "Price", "Description"])
+        self.table_widget.setHorizontalHeaderLabels(["ID", "Name", "Price", "Description", "Quantity"])
 
         self.load_data()
 
@@ -53,6 +53,7 @@ class MainWindow(QMainWindow):
         self.name_edit = QLineEdit(self)
         self.price_edit = QLineEdit(self)
         self.description_edit = QLineEdit(self)
+        self.quantity_edit = QLineEdit(self)
 
         layout.addWidget(QLabel("Name: "))
         layout.addWidget(self.name_edit)
@@ -60,6 +61,8 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.price_edit)
         layout.addWidget(QLabel("Description: "))
         layout.addWidget(self.description_edit)
+        layout.addWidget(QLabel("Quantity: "))
+        layout.addWidget(self.quantity_edit)
 
         # Button to add a product
         add_button = QPushButton("Add Product", self)
@@ -86,11 +89,17 @@ class MainWindow(QMainWindow):
         name = self.name_edit.text().strip()
         price = self.price_edit.text().strip()
         description = self.description_edit.text().strip()
+        quantity = self.quantity_edit.text().strip()
 
         product_id = int(self.table_widget.item(current_row, 0).text())
         cursor = self.conn.cursor()
-        cursor.execute("UPDATE products SET name = ?, price = ?, description = ? WHERE id = ?", (name, price, description, product_id))
+        cursor.execute("UPDATE products SET name = ?, price = ?, description = ?, quantity = ? WHERE id = ?", (name, price, description, quantity, product_id))
         self.conn.commit()
+
+        self.name_edit.clear()
+        self.price_edit.clear()
+        self.description_edit.clear()
+        self.quantity_edit.clear()
 
         self.load_data()
 
@@ -107,6 +116,11 @@ class MainWindow(QMainWindow):
             cursor.execute("DELETE FROM products WHERE id = ?", (product_id,))
             self.conn.commit()
 
+            self.name_edit.clear()
+            self.price_edit.clear()
+            self.description_edit.clear()
+            self.quantity_edit.clear()
+
             self.load_data()
 
 
@@ -115,9 +129,10 @@ class MainWindow(QMainWindow):
         name = self.name_edit.text().strip()
         price = self.price_edit.text().strip()
         description = self.description_edit.text().strip()
+        quantity = self.quantity_edit.text().strip()
 
         cursor = self.conn.cursor()
-        cursor.execute("INSERT INTO products (Name, Price, Description) VALUES (?, ?, ?)", (name, price, description))
+        cursor.execute("INSERT INTO products (Name, Price, Description, Quantity) VALUES (?, ?, ?, ?)", (name, price, description, quantity))
         self.conn.commit()
 
         self.load_data()
@@ -125,6 +140,7 @@ class MainWindow(QMainWindow):
         self.name_edit.clear()
         self.price_edit.clear()
         self.description_edit.clear()
+        self.quantity_edit.clear()
 
 
 app = QApplication(sys.argv)
