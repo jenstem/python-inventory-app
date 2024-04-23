@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QMenu, QMessageBox, QToolBar, QPushButton, QSpinBox, QMainWindow, QApplication, QWidget, QVBoxLayout, QTableWidget, QTableWidgetItem, QLineEdit, QLabel
+from PyQt5.QtWidgets import QMessageBox, QPushButton, QMainWindow, QApplication, QWidget, QVBoxLayout, QTableWidget, QTableWidgetItem, QLineEdit, QLabel
 import sqlite3
 import sys
 
@@ -87,15 +87,12 @@ class MainWindow(QMainWindow):
         price = self.price_edit.text().strip()
         description = self.description_edit.text().strip()
 
-        updated_product = {"Name": name, "Price": price, "Description": description}
-        self.products[current_row] = updated_product
+        product_id = int(self.table_widget.item(current_row, 0).text())
+        cursor = self.conn.cursor()
+        cursor.execute("UPDATE products SET name = ?, price = ?, description = ? WHERE id = ?", (name, price, description, product_id))
+        self.conn.commit()
 
-        for col, value in enumerate(updated_product.values()):
-            item = QTableWidgetItem(str(value))
-            self.table_widget.setItem(current_row, col, item)
-            self.name_edit.clear()
-            self.price_edit.clear()
-            self.description_edit.clear()
+        self.load_data()
 
 
     # Delete product from the table
