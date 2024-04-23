@@ -112,17 +112,13 @@ class MainWindow(QMainWindow):
         price = self.price_edit.text().strip()
         description = self.description_edit.text().strip()
 
-        new_product = {"Name": name, "Price": price, "Description": description}
-        self.products.append(new_product)
+        cursor = self.conn.cursor()
+        cursor.execute("INSERT INTO products (Name, Price, Description) VALUES (?, ?, ?)", (name, price, description))
+        self.conn.commit()
 
-        row_position = len(self.products) - 1
-        self.table_widget.insertRow(row_position)
-        for col, value in enumerate(new_product.values()):
-            item = QTableWidgetItem(str(value))
-            self.table_widget.setItem(row_position, col, item)
-            self.name_edit.clear()
-            self.price_edit.clear()
-            self.description_edit.clear()
+        self.name_edit.clear()
+        self.price_edit.clear()
+        self.description_edit.clear()
 
 
 app = QApplication(sys.argv)
