@@ -102,10 +102,15 @@ class MainWindow(QMainWindow):
     def delete_product(self):
         current_row = self.table_widget.currentRow()
         if current_row < 0 or current_row >= self.table_widget.rowCount():
-            button = QMessageBox.question(self, "Delete Product", "Are you sure you want to delete this product?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+                return QMessageBox.warning(self, "No row selected")
+        product_id = int(self.table_widget.item(current_row, 0).text())
+        button = QMessageBox.question(self, "Delete Product", "Are you sure you want to delete this product?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
         if button == QMessageBox.StandardButton.Yes:
-            self.table_widget.removeRow(current_row)
-            del self.products[current_row]
+            cursor = self.conn.cursor()
+            cursor.execute("DELETE FROM products WHERE id = ?", (product_id,))
+            self.conn.commit()
+
+            self.load_data()
 
 
     # Add product to the table
