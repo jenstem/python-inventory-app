@@ -8,18 +8,24 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.products = [
-        {"Name": "Apple", "Price": 1.0, "Description": "Honeycrisp Apples"},
-        {"Name": "Banana", "Price": 1.5, "Description": "Bunch of Organic Bananas"},
-        {"Name": "Cherry", "Price": 2.0, "Description": "1lb Bag of Cherries"},
-        {"Name": "Dates", "Price": 3.0, "Description": "1lb Bag of Dates"},
-        {"Name": "Elderberry", "Price": 4.0, "Description": "1 Pint of Elderberries"},
-]
-
         self.conn = sqlite3.connect("products.db")
         self.create_table()
         self.initUI()
 
+    # Read data
+    def load_data(self):
+        cursor = self.conn.cursor()
+        cursor.execute("SELECT * FROM products")
+        products = cursor.fetchall()
+
+        self.table_widget.setRowCount(len(products))
+
+        for row, product in enumerate(products):
+            for col, value in enumerate(product):
+                item = QTableWidgetItem(str(value))
+                self.table_widget.setItem(row, col, item)
+
+    # Create table
     def create_table(self):
         cursor = self.conn.cursor()
         cursor.execute("""CREATE TABLE IF NOT EXISTS products (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, price INTEGER, description TEXT)""")
@@ -37,15 +43,11 @@ class MainWindow(QMainWindow):
         self.table_widget = QTableWidget(self)
         layout.addWidget(self.table_widget)
 
-        self.table_widget.setRowCount(len(self.products))
-        self.table_widget.setColumnCount(len(self.products[0]))
+        self.table_widget.setColumnCount(4)
 
-        self.table_widget.setHorizontalHeaderLabels(self.products[0].keys())
+        self.table_widget.setHorizontalHeaderLabels(["ID", "Name", "Price", "Description"])
 
-        for row, product in enumerate(self.products):
-            for col, value in enumerate(product.values()):
-                item = QTableWidgetItem(str(value))
-                self.table_widget.setItem(row, col, item)
+        self.load_data()
 
         # Input fields
         self.name_edit = QLineEdit(self)
