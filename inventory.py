@@ -118,6 +118,8 @@ class MainWindow(QMainWindow):
         cursor.execute("INSERT INTO products (Name, Price, Description) VALUES (?, ?, ?)", (name, price, description))
         self.conn.commit()
 
+        self.load_data()
+
         self.name_edit.clear()
         self.price_edit.clear()
         self.description_edit.clear()
