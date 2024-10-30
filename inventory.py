@@ -4,16 +4,27 @@ import sys
 
 
 class MainWindow(QMainWindow):
+    """
+    Main application window for managing product inventory.
+    """
 
     def __init__(self):
+        """
+        Initializes the MainWindow, sets up the database connection,
+        creates the product table, and initializes the user interface.
+        """
         super().__init__()
 
         self.conn = sqlite3.connect("products.db")
         self.create_table()
         self.initUI()
 
-    # Read data
+
     def load_data(self):
+        """
+        Loads product data from the database and populates
+        the table widget
+        """
         cursor = self.conn.cursor()
         cursor.execute("SELECT * FROM products")
         products = cursor.fetchall()
@@ -25,13 +36,20 @@ class MainWindow(QMainWindow):
                 item = QTableWidgetItem(str(value))
                 self.table_widget.setItem(row, col, item)
 
-    # Create table
+
     def create_table(self):
+        """
+        Creates the products table in the database if it does not exist.
+        """
         cursor = self.conn.cursor()
         cursor.execute("""CREATE TABLE IF NOT EXISTS products (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, price INTEGER, description TEXT, quantity INTEGER)""")
         self.conn.commit()
 
+    
     def initUI(self):
+        """
+        Initializes the user interface components and layout.
+        """
         self.setGeometry(0, 0, 700, 500)
         self.setWindowTitle("Inventory")
 
@@ -80,8 +98,10 @@ class MainWindow(QMainWindow):
         layout.addWidget(update_button)
 
 
-    # Update product in the table
     def update_product(self):
+        """
+        Updates the selected product in the table with new values from input fields.
+        """
         current_row = self.table_widget.currentRow()
         if current_row < 0 or current_row >= self.table_widget.rowCount():
             return QMessageBox.warning(self, "No row selected")
@@ -104,8 +124,10 @@ class MainWindow(QMainWindow):
         self.load_data()
 
 
-    # Delete product from the table
     def delete_product(self):
+        """
+        Deletes the selected product from the table and database.
+        """
         current_row = self.table_widget.currentRow()
         if current_row < 0 or current_row >= self.table_widget.rowCount():
                 return QMessageBox.warning(self, "No row selected")
@@ -124,8 +146,10 @@ class MainWindow(QMainWindow):
             self.load_data()
 
 
-    # Add product to the table
     def add_product(self):
+        """
+        Adds a new product to the table and database using values from input fields.
+        """
         name = self.name_edit.text().strip()
         price = self.price_edit.text().strip()
         description = self.description_edit.text().strip()
